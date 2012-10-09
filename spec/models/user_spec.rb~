@@ -15,12 +15,20 @@ describe User do
   before {@user = User.new(name: "Example user", email: "user@example.com", password: "foobar", password_confirmation: "foobar")}
    subject {@user}
    
+  it { should respond_to(:password_confirmation)}
+  it {should respond_to(:remember_token)}
+  it {should respond_to(:authenticate)}
   it {should respond_to(:name)}
   it {should respond_to(:email)}
   it {should be_valid}
   it {should respond_to(:password_digest)}
   it {should respond_to(:password)}
   it {should respond_to(:password_confirmation)}
+  
+  describe "the remember token" do
+    before {@user.save}
+    its(:remember_token){should_not be_blank)}
+  end
   
   describe "when name is not present" do
     before {@user.name = " "}
@@ -109,18 +117,6 @@ describe User do
 	  @user.save
 	  @user.reload.email.should == mixed_case_email.downcase
 	end
-      end
-    end
-    
-    describe "User pages" do
-   
-      describe "profile page" do
-	let(:user) {FactoryGirl.create(:user)}    
-	puts user.to_yaml
-	before {visit user_path(user)}
-      
-	it {should have_selector('h1', text: user.name)}
-	it {should have_selector('title', text: user.name)}
       end
     end
     

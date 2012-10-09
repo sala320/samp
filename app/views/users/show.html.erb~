@@ -4,6 +4,7 @@
   <section>
 <h1>
 <%= gravatar_for @user %>
+<%= @user.remember_token.nil?.to_yaml %>
 <%= @user.name %>
 </h1>
   </section>

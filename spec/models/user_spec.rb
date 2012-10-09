@@ -15,12 +15,20 @@ describe User do
   before {@user = User.new(name: "Example user", email: "user@example.com", password: "foobar", password_confirmation: "foobar")}
    subject {@user}
    
+  it { should respond_to(:password_confirmation)}
+  it {should respond_to(:remember_token)}
+  it {should respond_to(:authenticate)}
   it {should respond_to(:name)}
   it {should respond_to(:email)}
   it {should be_valid}
   it {should respond_to(:password_digest)}
   it {should respond_to(:password)}
   it {should respond_to(:password_confirmation)}
+  
+  describe "the remember token" do
+    before {@user.save}
+    its(:remember_token){should_not be_blank}
+  end
   
   describe "when name is not present" do
     before {@user.name = " "}
