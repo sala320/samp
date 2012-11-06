@@ -1,9 +1,7 @@
-def full_title(page_title)
-  base_title = "Ruby on Rails Tutorial Sample App"
-  if page_title.empty?
-    base_title
-  else
-    "#{base_title} | #{page_title}"
-  end
-end
-
+include ApplicationHelper
+require_relative '../helpers/signin.rb'
+require_relative '../helpers/general.rb'
+require_relative '../helpers/mymatch.rb'
+include MakeUser
+#include Signin
+include Error

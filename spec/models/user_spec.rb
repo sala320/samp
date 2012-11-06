@@ -12,9 +12,12 @@
 require 'spec_helper'
 
 describe User do
-  before {@user = User.new(name: "Example user", email: "user@example.com", password: "foobar", password_confirmation: "foobar")}
+  before {makeuser}
    subject {@user}
    
+  it {should respond_to(:admin)}
+  it {should be_valid}
+  it {should_not be_admin}
   it { should respond_to(:password_confirmation)}
   it {should respond_to(:remember_token)}
   it {should respond_to(:authenticate)}
@@ -24,6 +27,14 @@ describe User do
   it {should respond_to(:password_digest)}
   it {should respond_to(:password)}
   it {should respond_to(:password_confirmation)}
+  
+  describe "with admin attribute set to 'true' " do
+    before do
+      @user.save!
+      @user.toggle!(:admin)
+    end
+    
+  end #with admin set to true
   
   describe "the remember token" do
     before {@user.save}
