@@ -11,6 +11,7 @@ describe "AuthenticationPages" do
     
     describe "with valid information" do
       let (:user) {FactoryGirl.create(:user)}
+      
       before do
 	valid_signin(user)
       end
@@ -32,10 +33,14 @@ describe "AuthenticationPages" do
     end
     
     describe "with invalid info" do 
+      
       before {click_button :submit}
       
       it {should have_selector('title', text: 'Sign in')}
       it {should have_selector('div.alert.alert-error', text: 'Invalid')}
+      it {should_not have_link('Settings')}
+      it {should_not have_link('Profile')}
+      it {should_not have_link('Sign out')}
       
       describe "after going to home page" do
 	before {click_link "Home"}
@@ -51,12 +56,31 @@ describe "AuthenticationPages" do
  end
  
  describe "authorization" do
+   
+   describe "for non admin in users" do 
+     let(:user) {FactoryGirl.create(:user)}
+     let(:user2) {FactoryGirl.create(:user1)}
+     before do
+       visit signin_path
+       signin(user)
+     end
+     
+     describe "submitting a DELETE request to the Users#destroy action" do
+       before {delete user_path(user2)}
+       specify {response.should redirect_to(root_path)}
+     end #submit delete
+   end #non admin users
+   
    describe "for non-signed-in users" do
      let(:user){FactoryGirl.create(:user)}
      
      describe "when attempting to visit a protected page" do
        before do
 	 visit edit_user_path(user)
+       end
+       
+       after do
+	 click_link "Sign out"
        end
        
             describe "after signing in" do
@@ -77,8 +101,24 @@ describe "AuthenticationPages" do
        end
        
        describe "submitting the update action" do
-	 before {put user_path(user)}
-	 specify {response.should redirect_to(signin_path)}
+	 before {visit edit_user_path(user)}
+ 	 it {should have_selector('title', text: 'Sign in')}
+#  	 specify {response.should redirect_to(signin_path)}
+	 describe "forwarding should occur once" do
+	  before do
+	    fill_in "Email", with: "wjandecali24"
+	    click_button "Sign in"
+	  end
+	  describe "final step" do
+	    before do
+	      valid_signin user
+	      delete '/signout'
+	      visit signin_path
+	      valid_signin user
+	    end
+	   it {should have_selector('title', text: user.name)}
+	  end
+	 end #forwarding once
        end #submitting action
        
        describe "visiting the Users index page" do
@@ -89,7 +129,7 @@ describe "AuthenticationPages" do
    end #for users
    
    describe "for users who are signed in" do
-     let(:user) {FactoryGirl.create(:user)}
+     let(:user) {FactoryGirl.create(:user, email: "bullshit@gmail.com")}
      let(:wrong_user){FactoryGirl.create(:user, email: "wjandali2@gmail.com")}
      before {visit signin_path}
      before {signin user}

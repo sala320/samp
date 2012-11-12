@@ -27,6 +27,12 @@ describe User do
   it {should respond_to(:password_digest)}
   it {should respond_to(:password)}
   it {should respond_to(:password_confirmation)}
+  it "shouldn't allow access to :admin attribute" do 
+    expect do
+      @user.update_attributes(admin: true)
+    end.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
+  end #shouldnt allow access
+  
   
   describe "with admin attribute set to 'true' " do
     before do

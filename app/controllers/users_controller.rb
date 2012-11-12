@@ -3,12 +3,20 @@ class UsersController < ApplicationController
   before_filter :correct_user, only: [:edit, :update]
   before_filter :admin_user, only: :destroy
   def destroy
-    User.find(params[:id]).destroy
-    flash[:success] = "User destroyed"
-    redirect_to users_url
+    if User.find(params[:id])==@current_user
+      redirect_to root_path
+    else
+      User.find(params[:id]).destroy
+      flash[:success] = "User destroyed"
+      redirect_to users_url
+    end
   end
   def new
-    @user=User.new
+    if signed_in?
+      redirect_to root_path
+    else
+      @user=User.new
+    end
   end
   def show
     @user= User.find(params[:id])
@@ -32,13 +40,17 @@ class UsersController < ApplicationController
   
   
   def create
-    @user=User.new(params[:user])
-    if @user.save
-      flash[:success] = "Welcome to the Sample App!"
-      sign_in @user
-      redirect_to @user
+    if signed_in?
+      redirect_to root_path
     else
-      render 'new'
+      @user=User.new(params[:user])
+      if @user.save
+	flash[:success] = "Welcome to the Sample App!"
+	sign_in @user
+	redirect_to @user
+      else
+	render 'new'
+      end
     end
   end
   
