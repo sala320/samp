@@ -21,6 +21,7 @@ describe User do
   it { should respond_to(:password_confirmation)}
   it {should respond_to(:remember_token)}
   it {should respond_to(:authenticate)}
+  it {should respond_to(:microposts)}
   it {should respond_to(:name)}
   it {should respond_to(:email)}
   it {should be_valid}
@@ -30,8 +31,37 @@ describe User do
   it "shouldn't allow access to :admin attribute" do 
     expect do
       @user.update_attributes(admin: true)
-    end.to raise_error(ActiveModel::MassAssignmentSecurity:Error)
+    end.to raise_error(ActiveModel::MassAssignmentSecurity::Error)
   end #shouldnt allow access
+  
+  describe "micropost associations" do
+    before {@user.save}
+    let!(:older_mciropost) do
+      FactoryGirl.create(:micropost, user: @user, created_at: 1.day.ago)
+    end
+    let!(:new_micropost) do
+      FactoryGirl.create(:micropost, user: @user, created_at: 1.hour.ago)
+    end
+    it "should have proper order for microposts" do
+      @user.microposts.should == [new_micropost, older_mciropost]
+    end
+    it "deleting microposts should follow a user destruction" do
+      microposts=@user.microposts.dup
+      @user.destroy
+      microposts.should_not be_empty
+      microposts.each do |micropost|
+	Microposts.find_by_id(micropost.id).should == nil
+      end
+    end
+#     describe "play" do
+#       puts @user.to_yaml
+#       puts @faf.to_yaml
+#       it "mydo" do
+# 	puts @user.to_yaml
+#       end
+#     end
+  end #associations    
+
   
   
   describe "with admin attribute set to 'true' " do

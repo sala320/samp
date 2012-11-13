@@ -9,7 +9,10 @@ FactoryGirl.define do
       admin true
     end
   end
-
+  factory :micropost do
+    content "Lorem ipsum"
+    user
+  end
   
   factory :user1, class: User do
     name "Jaquan Cooke"
