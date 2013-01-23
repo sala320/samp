@@ -17,6 +17,10 @@ class User < ActiveRecord::Base
   before_save { self.email.downcase! }
   before_save :create_remember_token
   
+  def feed 
+    Micropost.where("user_id = ?", id)
+  end
+  
 
   validates :name, presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i

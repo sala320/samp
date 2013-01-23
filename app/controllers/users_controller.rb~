@@ -9,6 +9,7 @@ class UsersController < ApplicationController
       User.find(params[:id]).destroy
       flash[:success] = "User destroyed"
       redirect_to users_url
+    end
   end
   def new
     if signed_in?
@@ -19,6 +20,7 @@ class UsersController < ApplicationController
   end
   def show
     @user= User.find(params[:id])
+    @microposts = @user.microposts.paginate(page: params[page])
   end
   def edit
   end  

@@ -50,7 +50,7 @@ describe User do
       @user.destroy
       microposts.should_not be_empty
       microposts.each do |micropost|
-	Microposts.find_by_id(micropost.id).should == nil
+	Micropost.find_by_id(micropost.id).should == nil
       end
     end
 #     describe "play" do
@@ -60,6 +60,7 @@ describe User do
 # 	puts @user.to_yaml
 #       end
 #     end
+    describe "status"
   end #associations    
 
   

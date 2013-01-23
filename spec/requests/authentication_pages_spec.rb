@@ -74,6 +74,15 @@ describe "AuthenticationPages" do
    describe "for non-signed-in users" do
      let(:user){FactoryGirl.create(:user)}
      
+     describe "in the microposts controller" do
+       before {post microposts_path}
+       specify {response.should redirect_to signin_path}
+     end #in microposts cont
+     
+     describe "submitting the destroy action" do 
+       before {delete micropost_path(FactoryGirl.create(:micropost))}
+       specify {response.should redirect_to(signin_path)}
+     end
      describe "when attempting to visit a protected page" do
        before do
 	 visit edit_user_path(user)

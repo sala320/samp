@@ -34,6 +34,19 @@ describe "Static pages" do
     end
     
     it {should_not have_selector 'title', text: '| Homex'}  
+    
+    describe "for signed-in users" do
+      let(:user) {FactoryGirl.create(:user)}
+      before do 
+	FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
+	FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
+      end
+      it "should render on the feed" do 
+	user.feed.each do |item|
+	  page.should have_selector("li##{item.id}", text: item.content)
+	  end
+      end
+    end
   end
 
   describe "Help page" do
