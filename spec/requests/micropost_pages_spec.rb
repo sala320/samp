@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "MicropostPages" do
-  subect {page}
+  subject {page}
   let(:user) {FactoryGirl.create(:user)}
   before {visit signin_url}
   before {signin user}
@@ -23,8 +23,8 @@ describe "MicropostPages" do
   
   describe "with invalid info" do 
     it "should not create a mp" do
-      expect {click_button "Post"}.not_to change(Micropost, :count)}
-      expect {click_button "Post"}.not_to change(Microposts.all.length)}
+      expect {click_button "Post"}.not_to change(Micropost, :count)
+      expect {click_button "Post"}.not_to change(Microposts.all.length)
     end
     
     describe "error messages" do 
@@ -36,8 +36,9 @@ describe "MicropostPages" do
   describe "with valid info" do 
     before {fill_in 'micropost_content', with: "lorem ips"}
     it "should make a mp" do
-      expect {click_button "Post"}.to change(Micropost, :count)}
-      expect {click_button "Post"}.to change(Micropost.all.length)}
+      expect {click_button "Post"}.to change(Micropost, :count)
+      expect {click_button "Post"}.to change(Micropost.all.length)
+      
     end #should make a mp
   end #valid info
 
